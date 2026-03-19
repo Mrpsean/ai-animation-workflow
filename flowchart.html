@@ -6,300 +6,350 @@
 <title>Pixar Animation Workflow</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F4EF; color: #1a1a1a; min-height: 100vh; padding: 32px 16px 64px; }
-.wrap { max-width: 800px; margin: 0 auto; }
-h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; color: #1a1a1a; }
-.subtitle { font-size: 14px; color: rgba(0,0,0,0.45); margin-bottom: 24px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F4EF; color: #1a1a1a; min-height: 100vh; }
 
-.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
-.leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(0,0,0,0.45); }
-.leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.page { display: flex; height: 100vh; overflow: hidden; }
 
-.flow { position: relative; }
+/* LEFT — flowchart */
+.flow-col {
+  flex: 1; min-width: 0;
+  padding: 28px 24px 64px;
+  overflow-y: auto;
+}
+h1 { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
+.subtitle { font-size: 13px; color: rgba(0,0,0,0.4); margin-bottom: 16px; }
+
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: rgba(0,0,0,0.4); }
+.leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
 svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-.node-group { cursor: pointer; }
+.node-group { cursor: pointer; transition: opacity 0.1s; }
 .node-group:hover rect { opacity: 0.85; }
+.node-group.active rect { stroke-width: 2 !important; }
 .phase-label { font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
 .parallel-label { font-size: 10px; letter-spacing: 0.03em; text-transform: uppercase; }
 .step-num { font-size: 11px; font-weight: 600; }
 
-/* Detail panel — replaces tooltip */
-.detail-panel {
-  display: none;
+/* RIGHT — detail panel */
+.detail-col {
+  width: 420px; flex-shrink: 0;
   background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 20px 24px;
-  margin-top: 20px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
-  animation: fadeIn 0.15s ease;
+  border-left: 1px solid #e0e0e0;
+  overflow-y: auto;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  padding: 28px 24px;
 }
-.detail-panel.show { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.detail-col.hidden {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  position: absolute; right: 0; top: 0; bottom: 0;
+}
+.detail-col.show {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+}
 
-.detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.detail-title { font-size: 15px; font-weight: 600; color: #111; }
-.detail-step { font-size: 12px; font-weight: 600; color: #7F77DD; background: #EEEDFE; padding: 2px 8px; border-radius: 4px; }
-.detail-instruction { font-size: 14px; color: #333; line-height: 1.5; margin-bottom: 16px; }
-.detail-close { position: absolute; top: 12px; right: 16px; cursor: pointer; font-size: 18px; color: #999; background: none; border: none; }
+.detail-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.detail-step-badge { font-size: 12px; font-weight: 600; color: #7F77DD; background: #EEEDFE; padding: 3px 10px; border-radius: 5px; }
+.detail-close { cursor: pointer; font-size: 20px; color: #999; background: none; border: none; line-height: 1; padding: 4px; }
 .detail-close:hover { color: #333; }
 
-.detail-images { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; }
-.detail-images img { height: 200px; border-radius: 8px; border: 1px solid #eee; flex-shrink: 0; }
-.detail-images .img-label { font-size: 11px; color: rgba(0,0,0,0.4); text-align: center; margin-top: 4px; }
-.detail-img-wrap { display: flex; flex-direction: column; flex-shrink: 0; }
+.detail-title { font-size: 17px; font-weight: 600; color: #111; margin-bottom: 10px; }
+.detail-instruction { font-size: 14px; color: #333; line-height: 1.55; margin-bottom: 20px; }
 
-.detail-links { display: flex; gap: 10px; flex-wrap: wrap; }
+.detail-images { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 6px; }
+.detail-img-wrap { display: flex; flex-direction: column; flex-shrink: 0; }
+.detail-images img { height: 180px; border-radius: 8px; border: 1px solid #eee; cursor: pointer; transition: transform 0.15s; }
+.detail-images img:hover { transform: scale(1.03); }
+.img-label { font-size: 11px; color: rgba(0,0,0,0.4); text-align: center; margin-top: 4px; }
+
+.detail-links { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .detail-links a {
   font-size: 13px; color: #185FA5; text-decoration: none;
-  padding: 6px 14px; border: 1px solid #185FA5; border-radius: 6px;
+  padding: 7px 14px; border: 1px solid #185FA5; border-radius: 6px;
   transition: background 0.1s;
 }
 .detail-links a:hover { background: #E6F1FB; }
 
-.detail-tip { font-size: 12px; color: #888; margin-top: 12px; font-style: italic; }
+.detail-tip { font-size: 12px; color: #888; font-style: italic; line-height: 1.5; padding: 12px 14px; background: #FAFAF7; border-radius: 6px; border-left: 3px solid #ddd; }
 
-.hint { font-size: 12px; color: rgba(0,0,0,0.4); margin-top: 12px; }
+/* Empty state */
+.detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: rgba(0,0,0,0.25); }
+.detail-empty-icon { font-size: 40px; margin-bottom: 12px; }
+.detail-empty-text { font-size: 14px; }
+
+/* Image lightbox */
+.lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; cursor: zoom-out; }
+.lightbox.show { display: flex; }
+.lightbox img { max-height: 90vh; max-width: 90vw; border-radius: 8px; }
+
+.hint { font-size: 11px; color: rgba(0,0,0,0.3); margin-top: 16px; }
+
+/* Responsive — stack on small screens */
+@media (max-width: 900px) {
+  .page { flex-direction: column; height: auto; overflow: visible; }
+  .flow-col { overflow: visible; }
+  .detail-col { width: 100%; border-left: none; border-top: 1px solid #e0e0e0; position: relative !important; }
+  .detail-col.hidden { display: none; transform: none; }
+  .detail-col.show { display: block; transform: none; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>Pixar Animation Workflow</h1>
-  <p class="subtitle">Click any step for details, screenshots, and tool links.</p>
 
-  <div class="legend">
-    <div class="leg-item"><div class="leg-dot" style="background:#7F77DD"></div> Sean (strategy)</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div> Claude (AI)</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div> Nano-Banana</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#185FA5"></div> Video tool</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#993556"></div> Review / decision</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#888780"></div> Output</div>
-  </div>
+<div class="page">
+  <!-- LEFT: FLOWCHART -->
+  <div class="flow-col">
+    <h1>Pixar Animation Workflow</h1>
+    <p class="subtitle">Click any step to see details, screenshots, and tool links.</p>
 
-  <div class="flow">
-    <svg width="100%" viewBox="0 0 680 1720" id="flowsvg">
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#7F77DD"></div> Sean (strategy)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#1D9E75"></div> Claude (AI)</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#BA7517"></div> Nano-Banana</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#185FA5"></div> Video tool</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#993556"></div> Review / decision</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#888780"></div> Output</div>
+    </div>
+
+    <svg width="100%" viewBox="0 0 680 1520" id="flowsvg">
       <defs>
         <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </marker>
       </defs>
 
-      <!-- ========== PHASE 1 — RESEARCH ========== -->
-      <text class="phase-label" x="40" y="32" fill="rgba(0,0,0,0.35)">Phase 1 — Research</text>
-      <text class="parallel-label" x="340" y="52" text-anchor="middle" fill="#993556" font-weight="500">&#x2B05; DO BOTH AT THE SAME TIME &#x27A1;</text>
+      <!-- PHASE 1 — RESEARCH -->
+      <text class="phase-label" x="40" y="28" fill="rgba(0,0,0,0.35)">Phase 1 — Research</text>
+      <text class="parallel-label" x="340" y="46" text-anchor="middle" fill="#993556" font-weight="500">&#x2B05; DO BOTH AT THE SAME TIME &#x27A1;</text>
 
-      <text class="step-num" x="52" y="74" fill="#7F77DD">1a</text>
-      <g class="node-group" data-step="1a" onclick="showDetail('step-1a')">
-        <rect x="40" y="60" width="280" height="48" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.5"/>
-        <text x="180" y="80" text-anchor="middle" font-size="13" font-weight="500" fill="#3C3489">Find reference video</text>
-        <text x="180" y="95" text-anchor="middle" font-size="11" fill="#534AB7">TikTok / Reels / YouTube</text>
+      <text class="step-num" x="52" y="68" fill="#7F77DD">1a</text>
+      <g class="node-group" data-step="step-1a" onclick="showDetail('step-1a')">
+        <rect x="40" y="54" width="280" height="44" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.5"/>
+        <text x="180" y="73" text-anchor="middle" font-size="13" font-weight="500" fill="#3C3489">Find reference video</text>
+        <text x="180" y="87" text-anchor="middle" font-size="11" fill="#534AB7">TikTok / Reels / YouTube</text>
       </g>
 
-      <text class="step-num" x="372" y="74" fill="#7F77DD">1b</text>
-      <g class="node-group" data-step="1b" onclick="showDetail('step-1b')">
-        <rect x="360" y="60" width="280" height="48" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.5"/>
-        <text x="500" y="80" text-anchor="middle" font-size="13" font-weight="500" fill="#3C3489">Screenshot inspiration frames</text>
-        <text x="500" y="95" text-anchor="middle" font-size="11" fill="#534AB7">Characters / visual style</text>
+      <text class="step-num" x="372" y="68" fill="#7F77DD">1b</text>
+      <g class="node-group" data-step="step-1b" onclick="showDetail('step-1b')">
+        <rect x="360" y="54" width="280" height="44" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.5"/>
+        <text x="500" y="73" text-anchor="middle" font-size="13" font-weight="500" fill="#3C3489">Screenshot inspiration frames</text>
+        <text x="500" y="87" text-anchor="middle" font-size="11" fill="#534AB7">Characters / visual style</text>
       </g>
 
-      <line x1="180" y1="108" x2="180" y2="134" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
-      <line x1="500" y1="108" x2="500" y2="134" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
-      <text class="parallel-label" x="340" y="132" text-anchor="middle" fill="#993556" font-weight="500">&#x2B05; DO BOTH AT THE SAME TIME &#x27A1;</text>
+      <line x1="180" y1="98" x2="180" y2="120" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="500" y1="98" x2="500" y2="120" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <text class="parallel-label" x="340" y="118" text-anchor="middle" fill="#993556" font-weight="500">&#x2B05; DO BOTH AT THE SAME TIME &#x27A1;</text>
 
-      <text class="step-num" x="52" y="154" fill="#7F77DD">1c</text>
-      <g class="node-group" onclick="showDetail('step-1c')">
-        <rect x="40" y="140" width="280" height="48" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.5"/>
-        <text x="180" y="160" text-anchor="middle" font-size="13" font-weight="500" fill="#3C3489">Google AI Studio breakdown</text>
-        <text x="180" y="175" text-anchor="middle" font-size="11" fill="#534AB7">Structure / arc / pacing</text>
+      <text class="step-num" x="52" y="140" fill="#7F77DD">1c</text>
+      <g class="node-group" data-step="step-1c" onclick="showDetail('step-1c')">
+        <rect x="40" y="126" width="280" height="44" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.5"/>
+        <text x="180" y="145" text-anchor="middle" font-size="13" font-weight="500" fill="#3C3489">Google AI Studio breakdown</text>
+        <text x="180" y="159" text-anchor="middle" font-size="11" fill="#534AB7">Structure / arc / pacing</text>
       </g>
 
-      <text class="step-num" x="372" y="154" fill="#1D9E75">1d</text>
-      <g class="node-group" onclick="showDetail('step-1d')">
-        <rect x="360" y="140" width="280" height="48" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
-        <text x="500" y="160" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Upload screenshots to Claude</text>
-        <text x="500" y="175" text-anchor="middle" font-size="11" fill="#0F6E56">Visual reference for prompts</text>
+      <text class="step-num" x="372" y="140" fill="#1D9E75">1d</text>
+      <g class="node-group" data-step="step-1d" onclick="showDetail('step-1d')">
+        <rect x="360" y="126" width="280" height="44" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+        <text x="500" y="145" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Upload screenshots to Claude</text>
+        <text x="500" y="159" text-anchor="middle" font-size="11" fill="#0F6E56">Visual reference for prompts</text>
       </g>
 
-      <line x1="180" y1="188" x2="180" y2="218" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
-      <line x1="500" y1="188" x2="500" y2="218" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
-      <line x1="180" y1="218" x2="330" y2="218" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
-      <line x1="500" y1="218" x2="350" y2="218" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
-      <line x1="340" y1="218" x2="340" y2="248" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="180" y1="170" x2="180" y2="196" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="500" y1="170" x2="500" y2="196" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="180" y1="196" x2="330" y2="196" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="500" y1="196" x2="350" y2="196" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="340" y1="196" x2="340" y2="220" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <!-- ========== PHASE 1.5 — CLAUDE SETUP ========== -->
-      <text class="phase-label" x="40" y="270" fill="rgba(0,0,0,0.35)">Phase 1.5 — Claude setup (first time only)</text>
+      <!-- PHASE 1.5 — CLAUDE SETUP -->
+      <text class="phase-label" x="40" y="240" fill="rgba(0,0,0,0.35)">Phase 1.5 — Claude setup (first time only)</text>
 
-      <text class="step-num" x="152" y="294" fill="#1D9E75">2</text>
-      <g class="node-group" onclick="showDetail('step-2')">
-        <rect x="140" y="280" width="400" height="48" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
-        <text x="340" y="300" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Prime Claude with brand knowledge</text>
-        <text x="340" y="315" text-anchor="middle" font-size="11" fill="#0F6E56">Skip if Claude project already trained</text>
+      <text class="step-num" x="152" y="262" fill="#1D9E75">2</text>
+      <g class="node-group" data-step="step-2" onclick="showDetail('step-2')">
+        <rect x="140" y="248" width="400" height="44" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+        <text x="340" y="267" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Prime Claude with brand knowledge</text>
+        <text x="340" y="281" text-anchor="middle" font-size="11" fill="#0F6E56">Skip if Claude project already trained</text>
       </g>
 
-      <line x1="340" y1="328" x2="340" y2="360" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="292" x2="340" y2="316" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <!-- ========== PHASE 2 — SCRIPT ========== -->
-      <text class="phase-label" x="40" y="382" fill="rgba(0,0,0,0.35)">Phase 2 — Script</text>
+      <!-- PHASE 2 — SCRIPT -->
+      <text class="phase-label" x="40" y="336" fill="rgba(0,0,0,0.35)">Phase 2 — Script</text>
 
-      <text class="step-num" x="152" y="406" fill="#1D9E75">3</text>
-      <g class="node-group" onclick="showDetail('step-3')">
-        <rect x="140" y="392" width="400" height="48" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
-        <text x="340" y="412" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Claude writes the script</text>
-        <text x="340" y="427" text-anchor="middle" font-size="11" fill="#0F6E56">Breakdown + screenshots + brand knowledge</text>
+      <text class="step-num" x="152" y="358" fill="#1D9E75">3</text>
+      <g class="node-group" data-step="step-3" onclick="showDetail('step-3')">
+        <rect x="140" y="344" width="400" height="44" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+        <text x="340" y="363" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Claude writes the script</text>
+        <text x="340" y="377" text-anchor="middle" font-size="11" fill="#0F6E56">Breakdown + screenshots + brand knowledge</text>
       </g>
 
-      <line x1="340" y1="440" x2="340" y2="468" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="388" x2="340" y2="412" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="202" y="482" fill="#993556">4</text>
-      <g class="node-group" onclick="showDetail('step-4')">
-        <rect x="190" y="468" width="300" height="48" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
-        <text x="340" y="488" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Sean reviews &amp; locks script</text>
-        <text x="340" y="503" text-anchor="middle" font-size="11" fill="#72243E">Handed to editor as locked doc</text>
+      <text class="step-num" x="202" y="430" fill="#993556">4</text>
+      <g class="node-group" data-step="step-4" onclick="showDetail('step-4')">
+        <rect x="190" y="416" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+        <text x="340" y="435" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Sean reviews &amp; locks script</text>
+        <text x="340" y="449" text-anchor="middle" font-size="11" fill="#72243E">Handed to editor as locked doc</text>
       </g>
 
-      <line x1="340" y1="516" x2="340" y2="548" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="460" x2="340" y2="488" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <!-- ========== PHASE 3 — SUPPLY LIFE BOX ========== -->
-      <text class="phase-label" x="40" y="570" fill="rgba(0,0,0,0.35)">Phase 3 — Supply Life box character</text>
+      <!-- PHASE 3 — SUPPLY LIFE BOX -->
+      <text class="phase-label" x="40" y="508" fill="rgba(0,0,0,0.35)">Phase 3 — Supply Life box character</text>
 
-      <text class="step-num" x="152" y="594" fill="#BA7517">5</text>
-      <g class="node-group" onclick="showDetail('step-5')">
-        <rect x="140" y="580" width="400" height="48" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
-        <text x="340" y="600" text-anchor="middle" font-size="13" font-weight="500" fill="#412402">Upload product &#x2192; Nano-Banana</text>
-        <text x="340" y="615" text-anchor="middle" font-size="11" fill="#854F0B">"Turn this into a Pixar character"</text>
+      <text class="step-num" x="152" y="530" fill="#BA7517">5</text>
+      <g class="node-group" data-step="step-5" onclick="showDetail('step-5')">
+        <rect x="140" y="516" width="400" height="44" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+        <text x="340" y="535" text-anchor="middle" font-size="13" font-weight="500" fill="#412402">Upload product &#x2192; Nano-Banana</text>
+        <text x="340" y="549" text-anchor="middle" font-size="11" fill="#854F0B">"Turn this into a Pixar character"</text>
       </g>
 
-      <line x1="340" y1="628" x2="340" y2="656" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="560" x2="340" y2="584" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="202" y="670" fill="#993556">6</text>
-      <g class="node-group" onclick="showDetail('step-6')">
-        <rect x="190" y="656" width="300" height="48" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
-        <text x="340" y="676" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with box character?</text>
-        <text x="340" y="691" text-anchor="middle" font-size="11" fill="#72243E">Check limbs, branding, expression</text>
+      <text class="step-num" x="202" y="602" fill="#993556">6</text>
+      <g class="node-group" data-step="step-6" onclick="showDetail('step-6')">
+        <rect x="190" y="588" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+        <text x="340" y="607" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with box character?</text>
+        <text x="340" y="621" text-anchor="middle" font-size="11" fill="#72243E">Check limbs, branding, expression</text>
       </g>
 
-      <line x1="490" y1="680" x2="550" y2="680" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="680" x2="550" y2="604" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="604" x2="542" y2="604" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
-      <text x="556" y="646" font-size="11" fill="#993556">No &#x2192; Claude</text>
+      <line x1="490" y1="610" x2="550" y2="610" stroke="#993556" stroke-width="0.8"/>
+      <line x1="550" y1="610" x2="550" y2="540" stroke="#993556" stroke-width="0.8"/>
+      <line x1="550" y1="540" x2="542" y2="540" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
+      <text x="556" y="578" font-size="11" fill="#993556">No &#x2192; Claude</text>
 
-      <line x1="340" y1="704" x2="340" y2="736" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
-      <text x="350" y="724" font-size="11" fill="rgba(0,0,0,0.35)">Yes &#x2192; save ref</text>
+      <line x1="340" y1="632" x2="340" y2="660" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="350" y="652" font-size="11" fill="rgba(0,0,0,0.35)">Yes &#x2192; save ref</text>
 
-      <!-- ========== PHASE 4 — SCENE IMAGES ========== -->
-      <text class="phase-label" x="40" y="758" fill="rgba(0,0,0,0.35)">Phase 4 — Scene images (villains + all scenes)</text>
+      <!-- PHASE 4 — SCENE IMAGES -->
+      <text class="phase-label" x="40" y="680" fill="rgba(0,0,0,0.35)">Phase 4 — Scene images (villains + all scenes)</text>
 
-      <text class="step-num" x="152" y="782" fill="#1D9E75">7</text>
-      <g class="node-group" onclick="showDetail('step-7')">
-        <rect x="140" y="768" width="400" height="48" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
-        <text x="340" y="788" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Ask Claude for 3+ image prompts</text>
-        <text x="340" y="803" text-anchor="middle" font-size="11" fill="#0F6E56">Per script line &#x2014; at least 3</text>
+      <text class="step-num" x="152" y="702" fill="#1D9E75">7</text>
+      <g class="node-group" data-step="step-7" onclick="showDetail('step-7')">
+        <rect x="140" y="688" width="400" height="44" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+        <text x="340" y="707" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Ask Claude for 3+ image prompts</text>
+        <text x="340" y="721" text-anchor="middle" font-size="11" fill="#0F6E56">Per script line &#x2014; at least 3</text>
       </g>
 
-      <line x1="340" y1="816" x2="340" y2="844" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="732" x2="340" y2="756" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="152" y="858" fill="#BA7517">8</text>
-      <g class="node-group" onclick="showDetail('step-8')">
-        <rect x="140" y="844" width="400" height="48" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
-        <text x="340" y="864" text-anchor="middle" font-size="13" font-weight="500" fill="#412402">Generate stills in Nano-Banana Pro</text>
-        <text x="340" y="879" text-anchor="middle" font-size="11" fill="#854F0B">2K quality &#xB7; action centred &#xB7; use character refs</text>
+      <text class="step-num" x="152" y="774" fill="#BA7517">8</text>
+      <g class="node-group" data-step="step-8" onclick="showDetail('step-8')">
+        <rect x="140" y="760" width="400" height="44" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+        <text x="340" y="779" text-anchor="middle" font-size="13" font-weight="500" fill="#412402">Generate stills in Nano-Banana Pro</text>
+        <text x="340" y="793" text-anchor="middle" font-size="11" fill="#854F0B">2K quality &#xB7; action centred &#xB7; use character refs</text>
       </g>
 
-      <line x1="340" y1="892" x2="340" y2="920" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="804" x2="340" y2="828" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="202" y="934" fill="#993556">9</text>
-      <g class="node-group" onclick="showDetail('step-9')">
-        <rect x="190" y="920" width="300" height="48" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
-        <text x="340" y="940" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with stills?</text>
-        <text x="340" y="955" text-anchor="middle" font-size="11" fill="#72243E">Screenshot problem &#x2192; Claude fixes</text>
+      <text class="step-num" x="202" y="846" fill="#993556">9</text>
+      <g class="node-group" data-step="step-9" onclick="showDetail('step-9')">
+        <rect x="190" y="832" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+        <text x="340" y="851" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with stills?</text>
+        <text x="340" y="865" text-anchor="middle" font-size="11" fill="#72243E">Screenshot problem &#x2192; Claude fixes</text>
       </g>
 
-      <line x1="490" y1="944" x2="550" y2="944" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="944" x2="550" y2="792" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="792" x2="542" y2="792" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
-      <text x="556" y="872" font-size="11" fill="#993556">No &#x2192; Claude</text>
+      <line x1="490" y1="854" x2="550" y2="854" stroke="#993556" stroke-width="0.8"/>
+      <line x1="550" y1="854" x2="550" y2="712" stroke="#993556" stroke-width="0.8"/>
+      <line x1="550" y1="712" x2="542" y2="712" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
+      <text x="556" y="786" font-size="11" fill="#993556">No &#x2192; Claude</text>
 
-      <line x1="340" y1="968" x2="340" y2="996" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="876" x2="340" y2="900" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="202" y="1010" fill="#993556">10</text>
-      <g class="node-group" onclick="showDetail('step-10')">
-        <rect x="190" y="996" width="300" height="48" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="1"/>
-        <text x="340" y="1016" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Sean reviews all stills</text>
-        <text x="340" y="1031" text-anchor="middle" font-size="11" fill="#72243E">CHECKPOINT &#x2014; before animation</text>
+      <text class="step-num" x="202" y="918" fill="#993556">10</text>
+      <g class="node-group" data-step="step-10" onclick="showDetail('step-10')">
+        <rect x="190" y="904" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="1"/>
+        <text x="340" y="923" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Sean reviews all stills</text>
+        <text x="340" y="937" text-anchor="middle" font-size="11" fill="#72243E">CHECKPOINT &#x2014; before animation</text>
       </g>
 
-      <line x1="340" y1="1044" x2="340" y2="1076" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="948" x2="340" y2="976" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <!-- ========== PHASE 5 — ANIMATION ========== -->
-      <text class="phase-label" x="40" y="1098" fill="rgba(0,0,0,0.35)">Phase 5 — Animation</text>
+      <!-- PHASE 5 — ANIMATION -->
+      <text class="phase-label" x="40" y="996" fill="rgba(0,0,0,0.35)">Phase 5 — Animation</text>
 
-      <text class="step-num" x="152" y="1122" fill="#185FA5">11</text>
-      <g class="node-group" onclick="showDetail('step-11')">
-        <rect x="140" y="1108" width="400" height="48" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
-        <text x="340" y="1128" text-anchor="middle" font-size="13" font-weight="500" fill="#042C53">Animate in Seedance 1.5 Pro</text>
-        <text x="340" y="1143" text-anchor="middle" font-size="11" fill="#185FA5">Simple prompt &#xB7; 5-8s &#xB7; no camera movement</text>
+      <text class="step-num" x="152" y="1018" fill="#185FA5">11</text>
+      <g class="node-group" data-step="step-11" onclick="showDetail('step-11')">
+        <rect x="140" y="1004" width="400" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+        <text x="340" y="1023" text-anchor="middle" font-size="13" font-weight="500" fill="#042C53">Animate in Seedance 1.5 Pro</text>
+        <text x="340" y="1037" text-anchor="middle" font-size="11" fill="#185FA5">Simple prompt &#xB7; 5-8s &#xB7; no camera movement</text>
       </g>
 
-      <line x1="340" y1="1156" x2="340" y2="1184" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="1048" x2="340" y2="1072" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="202" y="1198" fill="#993556">12</text>
-      <g class="node-group" onclick="showDetail('step-12')">
-        <rect x="190" y="1184" width="300" height="48" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
-        <text x="340" y="1204" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with animation?</text>
-        <text x="340" y="1219" text-anchor="middle" font-size="11" fill="#72243E">Screenshot &#x2192; Claude simplifies prompt</text>
+      <text class="step-num" x="202" y="1090" fill="#993556">12</text>
+      <g class="node-group" data-step="step-12" onclick="showDetail('step-12')">
+        <rect x="190" y="1076" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+        <text x="340" y="1095" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with animation?</text>
+        <text x="340" y="1109" text-anchor="middle" font-size="11" fill="#72243E">Screenshot &#x2192; Claude simplifies prompt</text>
       </g>
 
-      <line x1="490" y1="1208" x2="550" y2="1208" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="1208" x2="550" y2="1132" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="1132" x2="542" y2="1132" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
-      <text x="556" y="1174" font-size="11" fill="#993556">No &#x2192; Claude</text>
+      <line x1="490" y1="1098" x2="550" y2="1098" stroke="#993556" stroke-width="0.8"/>
+      <line x1="550" y1="1098" x2="550" y2="1028" stroke="#993556" stroke-width="0.8"/>
+      <line x1="550" y1="1028" x2="542" y2="1028" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
+      <text x="556" y="1066" font-size="11" fill="#993556">No &#x2192; Claude</text>
 
-      <line x1="340" y1="1232" x2="340" y2="1264" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="1120" x2="340" y2="1148" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <!-- ========== PHASE 6 — FINISH ========== -->
-      <text class="phase-label" x="40" y="1286" fill="rgba(0,0,0,0.35)">Phase 6 — Voiceover &amp; export</text>
+      <!-- PHASE 6 — FINISH -->
+      <text class="phase-label" x="40" y="1168" fill="rgba(0,0,0,0.35)">Phase 6 — Voiceover &amp; export</text>
 
-      <text class="step-num" x="152" y="1310" fill="#888780">13</text>
-      <g class="node-group" onclick="showDetail('step-13')">
-        <rect x="140" y="1296" width="400" height="48" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
-        <text x="340" y="1316" text-anchor="middle" font-size="13" font-weight="500" fill="#2C2C2A">Add voiceover</text>
-        <text x="340" y="1331" text-anchor="middle" font-size="11" fill="#5F5E5A">ElevenLabs V2 &#xB7; or keep Seedance audio</text>
+      <text class="step-num" x="152" y="1190" fill="#888780">13</text>
+      <g class="node-group" data-step="step-13" onclick="showDetail('step-13')">
+        <rect x="140" y="1176" width="400" height="44" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="340" y="1195" text-anchor="middle" font-size="13" font-weight="500" fill="#2C2C2A">Add voiceover</text>
+        <text x="340" y="1209" text-anchor="middle" font-size="11" fill="#5F5E5A">ElevenLabs V2 &#xB7; or keep Seedance audio</text>
       </g>
 
-      <line x1="340" y1="1344" x2="340" y2="1372" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="1220" x2="340" y2="1244" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="152" y="1386" fill="#888780">14</text>
-      <g class="node-group" onclick="showDetail('step-14')">
-        <rect x="140" y="1372" width="400" height="48" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
-        <text x="340" y="1392" text-anchor="middle" font-size="13" font-weight="500" fill="#2C2C2A">Stitch &#xB7; caption &#xB7; export</text>
-        <text x="340" y="1407" text-anchor="middle" font-size="11" fill="#5F5E5A">9:16 + 4:5 &#xB7; white captions &#xB7; black outline</text>
+      <text class="step-num" x="152" y="1262" fill="#888780">14</text>
+      <g class="node-group" data-step="step-14" onclick="showDetail('step-14')">
+        <rect x="140" y="1248" width="400" height="44" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="340" y="1267" text-anchor="middle" font-size="13" font-weight="500" fill="#2C2C2A">Stitch &#xB7; caption &#xB7; export</text>
+        <text x="340" y="1281" text-anchor="middle" font-size="11" fill="#5F5E5A">9:16 + 4:5 &#xB7; white captions &#xB7; black outline</text>
       </g>
 
-      <line x1="340" y1="1420" x2="340" y2="1448" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="1292" x2="340" y2="1316" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="202" y="1462" fill="#993556">15</text>
-      <g class="node-group" onclick="showDetail('step-15')">
-        <rect x="190" y="1448" width="300" height="48" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="1"/>
-        <text x="340" y="1468" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Final review &amp; deliver</text>
-        <text x="340" y="1483" text-anchor="middle" font-size="11" fill="#72243E">Upload to Frame IO</text>
+      <text class="step-num" x="202" y="1334" fill="#993556">15</text>
+      <g class="node-group" data-step="step-15" onclick="showDetail('step-15')">
+        <rect x="190" y="1320" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="1"/>
+        <text x="340" y="1339" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Final review &amp; deliver</text>
+        <text x="340" y="1353" text-anchor="middle" font-size="11" fill="#72243E">Upload to Frame IO</text>
       </g>
-
     </svg>
+
+    <p class="hint">Updated 19 Mar 2026 based on team feedback.</p>
   </div>
 
-  <!-- DETAIL PANEL — shows below the flowchart when a node is clicked -->
-  <div class="detail-panel" id="detail-panel">
-    <button class="detail-close" onclick="closeDetail()">&times;</button>
-    <div id="detail-content"></div>
+  <!-- RIGHT: DETAIL PANEL -->
+  <div class="detail-col hidden" id="detail-col">
+    <div class="detail-top">
+      <div class="detail-step-badge" id="detail-badge"></div>
+      <button class="detail-close" onclick="closeDetail()">&times;</button>
+    </div>
+    <div class="detail-title" id="detail-title"></div>
+    <div class="detail-instruction" id="detail-instruction"></div>
+    <div id="detail-images-container"></div>
+    <div id="detail-links-container"></div>
+    <div id="detail-tip-container"></div>
   </div>
+</div>
 
-  <p class="hint">Updated 18 Mar 2026 based on team feedback.</p>
+<!-- Image lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt=""/>
 </div>
 
 <script>
-const panel = document.getElementById('detail-panel');
-const content = document.getElementById('detail-content');
+const detailCol = document.getElementById('detail-col');
 let activeStep = null;
+let activeNode = null;
 
 const steps = {
   'step-1a': {
@@ -338,8 +388,8 @@ const steps = {
   },
   'step-2': {
     step: '2', title: 'Prime Claude with brand knowledge',
-    instruction: 'First time only: feed Claude product info, previous scripts, brand voice examples, the Supply Life box reference, and past ad breakdowns. Skip this if your Claude project is already trained.',
-    tip: 'Without brand context, Claude writes a generic health ad. It needs to know the product, price (£180+), test mechanics, results format (red/amber/green).'
+    instruction: 'First time only: feed Claude product info, previous scripts, brand voice examples, the Supply Life box reference, and past ad breakdowns. Skip if already trained.',
+    tip: 'Without brand context, Claude writes a generic health ad. It needs to know the product, price, test mechanics, results format (red/amber/green).'
   },
   'step-3': {
     step: '3', title: 'Claude writes the script',
@@ -353,56 +403,56 @@ const steps = {
     instruction: 'Sean reviews and locks the script. The editor receives the locked version — they never write or edit the script.',
   },
   'step-5': {
-    step: '5', title: 'Upload product → Nano-Banana',
+    step: '5', title: 'Upload product to Nano-Banana',
     instruction: 'Upload the real Supply Life product image. Prompt: "Turn this into a Pixar-style animated character with arms and legs." Generate at least 3 versions.',
     images: [
-      { src: 'images/supply-life-box.png', label: 'Supply Life box character (good output)' }
+      { src: 'images/supply-life-box.png', label: 'Good output: cardboard limbs, correct branding' }
     ],
     links: [
-      { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield (Nano-Banana)' }
+      { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield' }
     ],
     tip: 'Generate the box character FIRST, separately. You\'ll use this as a reference in every scene it appears in.'
   },
   'step-6': {
     step: '6', title: 'Happy with box character?',
-    instruction: 'Check: limb colour (cardboard, NOT gold/metallic), branding text, proportions, expression. If wrong — screenshot the bad output, send to Claude, describe the problem, get a fixed prompt, regenerate.',
+    instruction: 'Check: limb colour (cardboard, NOT gold/metallic), branding text, proportions, expression. If wrong — screenshot the bad output, send to Claude, describe the problem, get a fixed prompt.',
     images: [
       { src: 'images/supply-life-box.png', label: 'Good: cardboard limbs, correct branding' }
     ],
-    tip: 'Don\'t regenerate the same prompt — that gives variations of the same mistake. Claude needs to fix the prompt first.'
+    tip: 'Don\'t regenerate the same prompt — that gives variations of the same mistake. Claude fixes the prompt first.'
   },
   'step-7': {
     step: '7', title: 'Ask Claude for 3+ image prompts',
-    instruction: 'For every line of the script, ask: "Give me 3 creative different visual variations for a Nano-Banana image prompt for this script line: [paste line]." You can ask for more than 3 if needed.',
+    instruction: 'For every script line, ask: "Give me 3 creative different visual variations for a Nano-Banana image prompt for this script line: [paste line]." You can ask for more than 3.',
     images: [
-      { src: 'images/hook-gluten.png', label: 'Gluten hook scene' },
-      { src: 'images/villain-oats.png', label: 'Oats villain scene' },
-      { src: 'images/villain-peas.png', label: 'Peas villain scene' },
-      { src: 'images/gut-character.png', label: 'Gut character scene' }
+      { src: 'images/hook-gluten.png', label: 'Gluten hook' },
+      { src: 'images/villain-oats.png', label: 'Oats villain' },
+      { src: 'images/villain-peas.png', label: 'Peas villain' },
+      { src: 'images/gut-character.png', label: 'Gut character' }
     ],
-    tip: 'Generate villain characters as standalone references first, then place them into scene backgrounds. The strongest option is rarely the first one.'
+    tip: 'Generate villain characters as standalone refs first, then place them into scene backgrounds.'
   },
   'step-8': {
     step: '8', title: 'Generate stills in Nano-Banana Pro',
-    instruction: 'Paste Claude\'s chosen prompt into Nano-Banana Pro. 2K quality. Generate 2-3 versions. Keep all action centred in frame — edges get cropped on mobile.',
+    instruction: 'Paste Claude\'s chosen prompt into Nano-Banana Pro. 2K quality. Generate 2-3 versions. Keep all action centred in frame.',
     images: [
       { src: 'images/explainer.png', label: 'Explainer scene' },
       { src: 'images/results.png', label: 'Results scene' },
       { src: 'images/alternatives.png', label: 'Alternatives scene' }
     ],
     links: [
-      { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield (Nano-Banana)' }
+      { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield' }
     ],
-    tip: 'If the scene includes the Supply Life box, upload the saved box reference so it stays consistent.'
+    tip: 'If the scene includes the Supply Life box, upload the saved box reference so it stays consistent across scenes.'
   },
   'step-9': {
     step: '9', title: 'Happy with stills?',
-    instruction: 'If wrong — screenshot the bad output, send to Claude, describe the specific problem. Claude rewrites the prompt. Regenerate in Nano-Banana.',
-    tip: 'Don\'t just regenerate the same prompt hoping for a better result. Fix the prompt through Claude first.'
+    instruction: 'If wrong — screenshot the bad output, send to Claude, describe the problem. Claude rewrites the prompt. Regenerate in Nano-Banana.',
+    tip: 'Don\'t regenerate the same prompt hoping for better. Fix the prompt through Claude first.'
   },
   'step-10': {
     step: '10', title: 'Sean reviews all stills',
-    instruction: 'CHECKPOINT. Editor sends ALL stills to Sean before animating anything. Regenerating a still is free. Regenerating animated clips costs time and credits.',
+    instruction: 'CHECKPOINT. Send ALL stills to Sean before animating. Regenerating a still is free. Regenerating animated clips costs time and credits.',
     images: [
       { src: 'images/hook-gluten.png', label: 'Hook' },
       { src: 'images/villain-oats.png', label: 'Scene 2' },
@@ -414,24 +464,24 @@ const steps = {
   },
   'step-11': {
     step: '11', title: 'Animate in Seedance 1.5 Pro',
-    instruction: 'Upload the still as reference. Write ONE simple action yourself: subject + verb + object. Example: "The pea pumps the bicycle pump slowly." 5-8 seconds. No camera movement.',
+    instruction: 'Upload the still. Write ONE simple action: subject + verb + object. Example: "The pea pumps the bicycle pump slowly." 5-8 seconds. No camera movement.',
     links: [
-      { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield (Seedance)' }
+      { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield' }
     ],
-    tip: '&#x26A0; Do NOT use Claude for animation prompts — Claude writes too much detail which causes jittery output. Keep it simple. Also test Kling 2.5 and Veo 3.'
+    tip: '&#x26A0; Do NOT use Claude for animation prompts — too much detail causes jitter. Write it yourself, keep it simple. Also test Kling 2.5 and Veo 3.'
   },
   'step-12': {
     step: '12', title: 'Happy with animation?',
-    instruction: 'If jittery or wrong — screenshot the bad frame, send to Claude. Claude helps simplify the animation prompt. Then re-animate with the new prompt.',
-    tip: '&#x26A0; The screenshot goes to CLAUDE, not back into Seedance. Claude fixes the prompt. You paste the fixed prompt into the video tool.'
+    instruction: 'If jittery or wrong — screenshot the bad frame, send to Claude. Claude simplifies the prompt. You paste the fixed prompt into the video tool.',
+    tip: '&#x26A0; Screenshot goes to CLAUDE, not back into Seedance. Claude fixes the prompt.'
   },
   'step-13': {
     step: '13', title: 'Add voiceover',
-    instruction: 'Option A: Keep Seedance audio if it sounds good. Option B: Use ElevenLabs — paste the script line and pick a voice, or run Seedance audio through Voice Changer.',
+    instruction: 'Option A: Keep Seedance audio if it sounds good. Option B: ElevenLabs — paste the script line and pick a voice.',
     links: [
       { url: 'https://elevenlabs.io/', label: 'Open ElevenLabs' }
     ],
-    tip: 'Use ElevenLabs V2 for full scripts (V3 lacks consistency). Search voices by language — there are hundreds beyond the first 5-6 presets.'
+    tip: 'Use ElevenLabs V2 for full scripts (V3 lacks consistency). Search voices by language — hundreds beyond the default presets.'
   },
   'step-14': {
     step: '14', title: 'Stitch, caption, export',
@@ -442,54 +492,90 @@ const steps = {
   },
   'step-15': {
     step: '15', title: 'Final review & deliver',
-    instruction: 'Sean/Harry reviews the final video. If approved, upload to Frame IO for client delivery.',
+    instruction: 'Sean/Harry reviews the final video. If approved, upload to Frame IO.',
     images: [
-      { src: 'images/cta.png', label: 'Finished ad — Trustpilot CTA' }
+      { src: 'images/cta.png', label: 'Finished ad' }
     ]
   }
 };
 
 function showDetail(stepId) {
   if (activeStep === stepId) { closeDetail(); return; }
+
+  // Remove active state from previous node
+  if (activeNode) activeNode.classList.remove('active');
+
   activeStep = stepId;
   const s = steps[stepId];
   if (!s) return;
 
-  let html = '<div class="detail-header">';
-  html += '<div class="detail-title">' + s.title + '</div>';
-  html += '<div class="detail-step">Step ' + s.step + '</div>';
-  html += '</div>';
-  html += '<div class="detail-instruction">' + s.instruction + '</div>';
+  // Highlight active node
+  const node = document.querySelector(`[data-step="${stepId}"]`);
+  if (node) { node.classList.add('active'); activeNode = node; }
 
+  // Populate panel
+  document.getElementById('detail-badge').textContent = 'Step ' + s.step;
+  document.getElementById('detail-title').textContent = s.title;
+  document.getElementById('detail-instruction').textContent = s.instruction;
+
+  // Images
+  const imgContainer = document.getElementById('detail-images-container');
   if (s.images && s.images.length) {
-    html += '<div class="detail-images">';
+    let html = '<div class="detail-images">';
     s.images.forEach(img => {
-      html += '<div class="detail-img-wrap"><img src="' + img.src + '" alt="' + img.label + '" loading="lazy"><div class="img-label">' + img.label + '</div></div>';
+      html += '<div class="detail-img-wrap"><img src="' + img.src + '" alt="' + img.label + '" loading="lazy" onclick="openLightbox(\'' + img.src + '\')"><div class="img-label">' + img.label + '</div></div>';
     });
     html += '</div>';
+    imgContainer.innerHTML = html;
+  } else {
+    imgContainer.innerHTML = '';
   }
 
+  // Links
+  const linkContainer = document.getElementById('detail-links-container');
   if (s.links && s.links.length) {
-    html += '<div class="detail-links">';
+    let html = '<div class="detail-links">';
     s.links.forEach(link => {
       html += '<a href="' + link.url + '" target="_blank">' + link.label + ' &#x2197;</a>';
     });
     html += '</div>';
+    linkContainer.innerHTML = html;
+  } else {
+    linkContainer.innerHTML = '';
   }
 
+  // Tip
+  const tipContainer = document.getElementById('detail-tip-container');
   if (s.tip) {
-    html += '<div class="detail-tip">' + s.tip + '</div>';
+    tipContainer.innerHTML = '<div class="detail-tip">' + s.tip + '</div>';
+  } else {
+    tipContainer.innerHTML = '';
   }
 
-  content.innerHTML = html;
-  panel.classList.add('show');
-  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  detailCol.classList.remove('hidden');
+  detailCol.classList.add('show');
 }
 
 function closeDetail() {
-  panel.classList.remove('show');
+  detailCol.classList.remove('show');
+  detailCol.classList.add('hidden');
+  if (activeNode) activeNode.classList.remove('active');
   activeStep = null;
+  activeNode = null;
 }
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLightbox(); closeDetail(); }
+});
 </script>
 </body>
 </html>
