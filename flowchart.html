@@ -58,6 +58,8 @@ svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-seri
 
 .detail-title { font-size: 17px; font-weight: 600; color: #111; margin-bottom: 10px; }
 .detail-instruction { font-size: 14px; color: #333; line-height: 1.55; margin-bottom: 20px; }
+.detail-instruction ul { margin: 8px 0 0 18px; }
+.detail-instruction li { margin-bottom: 6px; }
 
 .detail-images { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 6px; }
 .detail-img-wrap { display: flex; flex-direction: column; flex-shrink: 0; }
@@ -203,10 +205,10 @@ svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-seri
         <text x="340" y="447" text-anchor="middle" font-size="11" fill="#72243E">Screenshot bad output &#x2192; Claude fixes</text>
       </g>
 
-      <line x1="490" y1="436" x2="620" y2="436" stroke="#993556" stroke-width="0.8"/>
-      <line x1="620" y1="436" x2="620" y2="340" stroke="#993556" stroke-width="0.8"/>
-      <line x1="620" y1="340" x2="662" y2="340" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
-      <text x="624" y="392" font-size="11" fill="#993556">No &#x2192; redo</text>
+      <line x1="490" y1="436" x2="560" y2="436" stroke="#993556" stroke-width="0.8"/>
+      <line x1="560" y1="436" x2="560" y2="270" stroke="#993556" stroke-width="0.8"/>
+      <line x1="560" y1="270" x2="492" y2="270" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
+      <text x="566" y="360" font-size="11" fill="#993556">No &#x2192; redo</text>
 
       <line x1="340" y1="458" x2="340" y2="488" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
@@ -409,7 +411,7 @@ let activeNode = null;
 const steps = {
   'step-1a': {
     step: '1a', title: 'Find reference video(s)',
-    instruction: 'Find Pixar-style animated videos performing well on TikTok, Reels or YouTube Shorts. You can use MULTIPLE videos — structure from one, character style from another, visual inspiration from a third. Download them all.',
+    instruction: '<ul><li>Find Pixar-style animated videos performing well on TikTok, Reels or YouTube Shorts</li><li>You can use <strong>multiple videos</strong> — structure from one, character style from another, visual inspiration from a third</li><li>Download them all</li></ul>',
     images: [
       { src: 'images/ref-banana.png', label: 'Organic viral: muscular banana (inspired the gluten hook)' }
     ],
@@ -417,17 +419,21 @@ const steps = {
   },
   'step-1b': {
     step: '1b', title: 'Screenshot inspiration frames',
-    instruction: 'Screenshot specific frames that spark ideas — a character design, a visual metaphor, an action, an expression. These screenshots go to Claude (NOT Nano-Banana). Claude describes what it sees and writes prompts inspired by it.',
+    instruction: '<ul><li>Screenshot specific frames that spark ideas — a character design, a visual metaphor, an action</li><li>Screenshots go to <strong>Claude</strong>, NOT Nano-Banana</li><li>Claude describes what it sees and writes prompts <em>inspired</em> by it — not copies</li></ul>',
     images: [
-      { src: 'images/hook-gluten.png', label: 'Muscular gluten: came from a banana reference screenshot' },
-      { src: 'images/villain-peas.png', label: 'Peas bicycle pump: Claude invented this concept' },
-      { src: 'images/gut-character.png', label: 'Gut on belly: inspired by a different organic video' }
+      { src: 'images/hook-gluten.png', label: 'Muscular gluten: inspired by banana reference' },
+      { src: 'images/chat-hook-inspiration.png', label: 'Chat: Sean uploads banana ref, asks for hook inspired by it' },
+      { src: 'images/villain-peas.png', label: 'Peas bicycle pump: Claude invented this' },
+      { src: 'images/gut-character.png', label: 'Gut on belly: inspired by a different video' }
     ],
-    tip: 'Screenshots go to Claude, not Nano-Banana. Claude translates visual references into original prompts. Uploading directly to Nano-Banana produces copies, not original work.'
+    tip: 'Uploading directly to Nano-Banana produces copies, not original work. Claude translates visual references into original prompts.'
   },
   'step-1c': {
     step: '1c', title: 'Google AI Studio breakdown',
-    instruction: 'Upload reference video(s) to Google AI Studio. Paste the forensic breakdown prompt. This extracts the structural formula — scene count, emotional arc, character dynamic, pacing. Claude can\'t watch videos, so this is how it understands the format.',
+    instruction: '<ul><li>Upload reference video(s) to Google AI Studio</li><li>Paste the forensic breakdown prompt</li><li>This extracts the structural formula — scene count, emotional arc, character dynamic, pacing</li><li>Claude can\'t watch videos — this is how it understands the format</li></ul>',
+    images: [
+      { src: 'images/chat-ai-studio.png', label: 'Google AI Studio with breakdown prompt loaded' }
+    ],
     links: [
       { url: 'https://aistudio.google.com/', label: 'Open Google AI Studio' }
     ],
@@ -435,86 +441,92 @@ const steps = {
   },
   'step-1d': {
     step: '1d', title: 'Upload screenshots to Claude',
-    instruction: 'Upload inspiration screenshots into Claude with this message: "Here is a frame from a reference video. I like [specific quality]. Use this as visual inspiration to write a Nano-Banana prompt for this scene line: [line]." Claude translates the reference into an original prompt.',
+    instruction: '<ul><li>Upload inspiration screenshots into Claude</li><li>Tell Claude: "I like [specific quality — the muscular texture, the external grip, the expression]"</li><li>Claude writes a Nano-Banana prompt inspired by what it sees</li></ul>',
+    images: [
+      { src: 'images/chat-hook-inspiration.png', label: 'Chat: uploading banana ref to Claude for hook inspiration' }
+    ],
     links: [
       { url: 'https://claude.ai/', label: 'Open Claude' }
     ]
   },
   'step-2': {
     step: '2', title: 'Reusing character or creating new?',
-    instruction: 'Decision point. If you already have a Pixar-ified character from a previous ad that you want to reuse — go left (Path A). If you need a brand new character — go right (Path B). Either way, Claude must see the character before writing any scene prompts.',
-    tip: 'The V2 top performer reused the Supply Life box character from V1. It was shown to Claude at the start of the session — not recreated from scratch.'
+    instruction: '<ul><li><strong>Path A (left):</strong> Already have a Pixar character from a previous ad → show it to Claude, skip Nano-Banana</li><li><strong>Path B (right):</strong> Need a new character → Nano-Banana creates it from the real product photo</li><li>Either way, Claude must see the character before writing any scene prompts</li></ul>',
+    tip: 'V2 reused the Supply Life box from V1 — it was shown to Claude, not recreated from scratch.'
   },
   'step-2a': {
     step: '2a', title: 'Show existing character to Claude',
-    instruction: 'Upload the existing Pixar-ified character image to Claude. Say: "This is the character we\'re using for this ad." Claude now knows the design and will include it accurately in every Nano-Banana prompt. Skip Nano-Banana character creation entirely.',
+    instruction: '<ul><li>Upload the existing Pixar character image to Claude</li><li>Say: "This is the character we\'re using for this ad"</li><li>Claude now knows the design — skip Nano-Banana entirely</li></ul>',
     images: [
-      { src: 'images/supply-life-box.png', label: 'Existing Supply Life box character from V1/V2' }
+      { src: 'images/chat-box-character.png', label: 'Chat: Sean shows Claude the Supply Life box character' },
+      { src: 'images/supply-life-box.png', label: 'The character Claude was shown' }
     ],
-    tip: 'This is what happened in the V2 production — the character already existed from V1. No need to recreate it.'
+    tip: 'This is what happened in V2 — the character already existed from V1.'
   },
   'step-2b': {
     step: '2b', title: 'Nano-Banana: Pixar-ify the product',
-    instruction: 'Only if creating a NEW character. Upload the real product photo to Nano-Banana Pro. Prompt: "Turn this into a Pixar/Dreamworks 3D animated character." Generate 3+ versions, pick the best. Then show that chosen character to Claude so Claude knows the design going forward.',
+    instruction: '<ul><li>Only if creating a <strong>new</strong> character</li><li>Upload real product photo to Nano-Banana Pro</li><li>Prompt: "Turn this into a Pixar/Dreamworks 3D animated character"</li><li>Generate 3+ versions, pick the best</li><li>Then show that chosen character to Claude</li></ul>',
     links: [
       { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield' }
     ],
-    tip: 'Save the chosen output — it becomes the character reference for every subsequent scene. Upload it as a reference in Nano-Banana for consistency.'
+    tip: 'Save the output — it becomes the character reference for every subsequent scene.'
   },
   'step-2c': {
     step: '2c', title: 'Happy with character?',
-    instruction: 'Check the output (whether reused or new). If wrong — screenshot the bad output, send to Claude, describe the specific problem. Claude rewrites the prompt. Regenerate. Don\'t regenerate the same prompt — that gives variations of the same mistake.',
+    instruction: '<ul><li>If wrong — screenshot the bad output, send to Claude</li><li>Describe the specific problem</li><li>Claude rewrites the prompt</li><li>Regenerate — don\'t regenerate the same prompt blindly</li></ul>',
     images: [
-      { src: 'images/supply-life-box.png', label: 'Good: correct character design' }
+      { src: 'images/chat-box-variation.png', label: 'Chat: "I like this image but make the box like the 2nd image"' },
+      { src: 'images/supply-life-box.png', label: 'Good output' }
     ],
-    tip: 'Known issue: Nano-Banana sometimes renders limbs as gold/metallic instead of cardboard-coloured. Specify "cardboard-coloured limbs, NOT metallic" in the prompt if this happens.'
+    tip: 'Known issue: Nano-Banana sometimes renders limbs as gold/metallic. Specify "cardboard-coloured limbs, NOT metallic" in the prompt.'
   },
   'step-3': {
     step: '3', title: 'Claude writes the script (iterative)',
-    instruction: 'This is NOT one step. The V2 script went through 15+ rounds: food choices changed (baked beans → eggs → oats + peas), dialogue was too wordy → too simple → too AI-sounding, bridge lines were iterated 5 times. Push Claude until every line sounds like something someone would actually say out loud, matching the cadence of the top performer.',
+    instruction: '<ul><li>This is NOT one step — V2 went through 15+ rounds</li><li>Food choices changed (baked beans → eggs → oats + peas)</li><li>Dialogue was too wordy → too simple → too AI-sounding</li><li>Bridge lines iterated 5 times</li><li>Push until every line sounds like something someone would actually say</li><li>Cadence must match the top performer — flowing, not choppy</li></ul>',
     links: [
       { url: 'https://claude.ai/', label: 'Open Claude' }
     ],
-    tip: 'Compare every line against the top performer\'s cadence. Flowing natural sentences, not chopped staccato AI patterns. If it sounds "written" rather than "spoken," push Claude to rewrite.'
+    tip: 'If it sounds "written" rather than "spoken," push Claude to rewrite.'
   },
   'step-3b': {
     step: '3b', title: 'Validate foods on test panel',
-    instruction: 'Before locking ANY villain food into the script, check it appears by its common name on the Supply Life test panel. "Baked beans" was rejected because only "Bean (White Haricot)" appears on the panel. If someone buys the test and can\'t find the food from the ad, it damages trust.',
-    tip: 'Safe foods that appear explicitly: oats, eggs (egg white/yolk), cow\'s milk, peas, gluten/wheat, rice, soya.'
+    instruction: '<ul><li>Before locking ANY villain food, check it appears by its common name on the test panel</li><li>"Baked beans" was rejected — only "Bean (White Haricot)" appears</li><li>If someone buys the test and can\'t find the food from the ad, it damages trust</li></ul>',
+    tip: 'Safe foods: oats, eggs (egg white/yolk), cow\'s milk, peas, gluten/wheat, rice, soya.'
   },
   'step-4': {
     step: '4', title: 'Sean reviews & locks script',
-    instruction: 'Sean reviews and locks the script. The editor receives the locked version — they never write or edit the script. The locked script is the single source of truth for all subsequent steps.'
+    instruction: '<ul><li>Sean reviews and locks the script</li><li>Editor receives the locked version — they never write or edit it</li><li>The locked script is the single source of truth</li></ul>'
   },
   'step-5': {
     step: '5', title: 'Claude invents visual metaphors per scene',
-    instruction: 'THIS IS THE MOST CREATIVE STEP. For each script line, ask Claude: "How would you visually show [this concept] in a funny, unexpected way inside the body?" Claude proposes multiple directions — bicycle pump, jackhammer, factory meltdown, graffiti etc. You filter and pick. Your job is to curate, not invent.',
+    instruction: '<ul><li><strong>This is the most creative step in the entire workflow</strong></li><li>For each script line, ask Claude: "How would you visually show this in a funny, unexpected way inside the body?"</li><li>Claude proposes multiple directions — bicycle pump, jackhammer, factory meltdown, graffiti etc.</li><li>You filter and pick — your job is to curate, not invent</li><li>Push Claude if the first batch feels safe — ask for more</li></ul>',
     images: [
-      { src: 'images/villain-peas.png', label: 'Peas + bicycle pump (Claude invented this)' },
-      { src: 'images/villain-oats.png', label: 'Oats + sludge on brain (Claude invented this)' }
+      { src: 'images/villain-peas.png', label: 'Peas + bicycle pump (Claude invented)' },
+      { src: 'images/villain-oats.png', label: 'Oats + sludge on brain (Claude invented)' }
     ],
-    tip: 'Push Claude to be more creative if the first batch feels safe. The bicycle pump, jackhammer, and muscular grip concepts all came from asking "give me more" after rejecting initial ideas.'
+    tip: 'The bicycle pump, jackhammer, and muscular grip concepts all came from asking "give me more" after rejecting initial ideas.'
   },
   'step-5b': {
     step: '5b', title: 'Filter: 2 rules must pass',
-    instruction: 'Every visual concept must pass BOTH filters before proceeding: (1) Instant understanding — can someone who has never seen this ad understand what\'s happening in 2 seconds? (2) Lives inside/on the body — does it take place in or on the human body? Concepts set in courtrooms, kitchens, offices etc. were all rejected.',
-    tip: 'Concepts that failed these filters: politician on campaign trail, estate agent, car salesman, undercover spy in trench coat, news broadcast, press conference. All required too much processing or left the body world.'
+    instruction: '<ul><li><strong>Rule 1: Instant understanding</strong> — can someone understand this in 2 seconds flat?</li><li><strong>Rule 2: Lives inside/on the body</strong> — does it take place in or on the human body?</li><li>If it fails either test, kill it and ask for more</li></ul>',
+    tip: 'Failed: politician, estate agent, car salesman, undercover spy, courtroom, news broadcast. All required too much processing or left the body world.'
   },
   'step-6': {
     step: '6', title: 'Claude writes 3+ Nano-Banana prompts',
-    instruction: 'Once the visual concept is chosen, ask Claude for at least 3 different Nano-Banana prompt variations. You can ask for more. The strongest option is not always predictable — read all options before deciding.',
+    instruction: '<ul><li>Once the visual concept is chosen, ask Claude for at least 3 prompt variations</li><li>You can ask for more than 3</li><li>The strongest option is not always predictable — read all before deciding</li></ul>',
     images: [
       { src: 'images/hook-gluten.png', label: 'Gluten hook' },
       { src: 'images/villain-oats.png', label: 'Oats scene' },
       { src: 'images/villain-peas.png', label: 'Peas scene' },
       { src: 'images/gut-character.png', label: 'Gut character' }
     ],
-    tip: 'Villain characters emerge from generation, not pre-planning. The porridge bowl with wooden spoon, muscular wheat texture, and pea with bicycle pump were all discovered through Nano-Banana output.'
+    tip: 'Characters emerge from generation, not pre-planning. The porridge bowl with wooden spoon, muscular wheat texture, and pea with bicycle pump were all discovered through output.'
   },
   'step-7': {
     step: '7', title: 'Generate stills in Nano-Banana Pro',
-    instruction: 'Paste the chosen prompt into Nano-Banana Pro. 2K quality. Generate 2-3 versions. All key action centred in frame — edges get cropped on mobile. If the scene includes the Supply Life box, upload the saved character reference.',
+    instruction: '<ul><li>Paste chosen prompt into Nano-Banana Pro at 2K quality</li><li>Generate 2-3 versions</li><li>All key action centred in frame — edges get cropped on mobile</li><li>If scene includes the Supply Life box, upload the saved character reference</li></ul>',
     images: [
+      { src: 'images/chat-safe-zones.png', label: 'Chat: Sean gives safe zone feedback during iteration' },
       { src: 'images/explainer.png', label: 'Explainer scene' },
       { src: 'images/results.png', label: 'Results scene' },
       { src: 'images/alternatives.png', label: 'Alternatives scene' }
@@ -522,16 +534,19 @@ const steps = {
     links: [
       { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield' }
     ],
-    tip: 'Give composition feedback during iteration: "make it more centred for Meta/TikTok safe zones" is a valid refinement note to send back to Claude.'
+    tip: '"Make it more centred for Meta/TikTok safe zones" is a valid refinement note to send back to Claude.'
   },
   'step-8': {
     step: '8', title: 'Happy with stills?',
-    instruction: 'If wrong — screenshot the bad output, send to Claude, describe the specific problem. Claude rewrites the prompt. Regenerate. Don\'t regenerate the same prompt blindly.',
-    tip: 'Common issues: character not recognisable as the food, key elements missing from frame, action not centred, expression wrong. Always describe the specific problem to Claude.'
+    instruction: '<ul><li>If wrong — screenshot the bad output, send to Claude</li><li>Describe the specific problem</li><li>Claude rewrites the prompt</li><li>Regenerate — don\'t regenerate the same prompt blindly</li></ul>',
+    images: [
+      { src: 'images/chat-gluten-iterate.png', label: 'Chat: "doesn\'t quite work" → Claude fixes the prompt' }
+    ],
+    tip: 'Common issues: character not recognisable, key elements missing, action not centred, expression wrong.'
   },
   'step-9': {
     step: '9', title: 'Sean reviews ALL stills',
-    instruction: 'CHECKPOINT. Send ALL stills to Sean before animating anything. Regenerating a still is free. Regenerating animated clips costs time and credits. Catch problems here.',
+    instruction: '<ul><li><strong>CHECKPOINT</strong> — send ALL stills before animating</li><li>Regenerating a still is free</li><li>Regenerating animated clips costs time and credits</li><li>Catch problems here</li></ul>',
     images: [
       { src: 'images/hook-gluten.png', label: 'Hook' },
       { src: 'images/villain-oats.png', label: 'Oats' },
@@ -543,43 +558,47 @@ const steps = {
   },
   'step-10': {
     step: '10', title: 'Create 3 hook variations',
-    instruction: 'Hooks follow DIFFERENT rules from body scenes. Lock the hook IMAGE first, then write the hook COPY to match what the viewer is seeing. Each of the 3 variations must feel genuinely different — not minor tweaks. The V2 top performer hook (muscular gluten) was created AFTER the body scenes were built.',
+    instruction: '<ul><li>Hooks follow <strong>different rules</strong> from body scenes</li><li>Lock the hook <strong>image first</strong>, write copy second</li><li>Each variation must feel genuinely different — not minor tweaks</li><li>Can be created at any point — V2\'s top hook was made AFTER the body</li></ul>',
     images: [
+      { src: 'images/chat-hook-copy.png', label: 'Chat: hook copy written AFTER image was locked' },
       { src: 'images/hook-gluten.png', label: 'Hook A: muscular grip (top performer)' },
       { src: 'images/ref-banana.png', label: 'Inspiration: organic banana video' }
     ],
-    tip: 'Hook image first, copy second. The "I\'m gluten" line was written AFTER the muscular grip image was locked. For body scenes, it\'s the opposite — script leads, visuals support.'
+    tip: 'The "I\'m gluten" line was written AFTER the muscular grip image was locked. Visual first, words second.'
   },
   'step-11': {
     step: '11', title: 'Animate in Seedance 1.5 Pro',
-    instruction: 'Upload the still. Write ONE simple action yourself. The proven format is: "The character speaks: \'[line]\'. [Tone] voice. No camera movement." That\'s it. 5-8 seconds. Also test Kling 2.5 and Veo 3.',
+    instruction: '<ul><li>Upload the still as reference</li><li>Write ONE simple action yourself — subject + verb + object</li><li>Proven format: "The character speaks: \'[line]\'. [Tone] voice. No camera movement."</li><li>5-8 seconds per clip</li><li>Also test Kling 2.5 and Veo 3</li></ul>',
+    images: [
+      { src: 'images/chat-animate-gut.png', label: 'Chat: Claude gives a Seedance prompt for the gut scene' }
+    ],
     links: [
       { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield' }
     ],
-    tip: '&#x26A0; Do NOT use Claude for animation prompts — Claude writes too much detail which causes jittery output. Write it yourself, keep it dead simple. Subject + verb + object.'
+    tip: '&#x26A0; Do NOT use Claude for animation prompts — Claude writes too much detail causing jitter. Write it yourself, keep it dead simple.'
   },
   'step-12': {
     step: '12', title: 'Happy with animation?',
-    instruction: 'If jittery or wrong — screenshot the bad frame, send to Claude. Claude helps simplify the animation prompt. You paste the fixed prompt into the video tool. The screenshot goes to CLAUDE, not back into Seedance.',
-    tip: 'The working format discovered through trial and error: "The character speaks: \'I\'m gluten. And every time you eat me, I inflate your stomach, that bloating is me.\' Angry voice. No camera movement." — this also generated a strong voice without needing ElevenLabs.'
+    instruction: '<ul><li>If jittery or wrong — screenshot the bad frame</li><li>Send screenshot to <strong>Claude</strong>, not back into Seedance</li><li>Claude helps simplify the prompt</li><li>Paste the fixed prompt into the video tool</li></ul>',
+    tip: 'Working format: "The character speaks: \'I\'m gluten. And every time you eat me, I inflate your stomach, that bloating is me.\' Angry voice. No camera movement." — also generated a strong voice without ElevenLabs.'
   },
   'step-13': {
     step: '13', title: 'Add voiceover',
-    instruction: 'Check the Seedance audio first — it sometimes generates strong voice automatically. If it sounds robotic or flat, use ElevenLabs Voice Changer. Use V2 for full scripts (V3 lacks consistency). Search voices by language — hundreds beyond the default presets.',
+    instruction: '<ul><li>Check Seedance audio first — it sometimes generates strong voice automatically</li><li>If robotic or flat → use ElevenLabs Voice Changer</li><li>Use ElevenLabs V2 for full scripts (V3 lacks consistency)</li><li>Search voices by language — hundreds beyond the defaults</li></ul>',
     links: [
       { url: 'https://elevenlabs.io/', label: 'Open ElevenLabs' }
     ]
   },
   'step-14': {
     step: '14', title: 'Stitch, caption, export',
-    instruction: 'Stitch all scenes in order. Add karaoke captions: white text, black outline, 60-70% down the frame. Export BOTH formats: 9:16 (1080x1920) and 4:5 (1080x1350).',
+    instruction: '<ul><li>Stitch all scenes in order</li><li>Karaoke captions: white text, black outline, 60-70% down frame</li><li>Export <strong>both</strong> formats: 9:16 (1080x1920) and 4:5 (1080x1350)</li></ul>',
     images: [
       { src: 'images/cta.png', label: 'Final CTA scene' }
     ]
   },
   'step-15': {
     step: '15', title: 'Final review & deliver',
-    instruction: 'Sean/Harry reviews the final video. If approved, upload to Frame IO for client delivery.'
+    instruction: '<ul><li>Sean/Harry reviews the final video</li><li>If approved, upload to Frame IO</li></ul>'
   }
 };
 
@@ -593,7 +612,7 @@ function showDetail(stepId) {
   if (node) { node.classList.add('active'); activeNode = node; }
   document.getElementById('detail-badge').textContent = 'Step ' + s.step;
   document.getElementById('detail-title').textContent = s.title;
-  document.getElementById('detail-instruction').textContent = s.instruction;
+  document.getElementById('detail-instruction').innerHTML = s.instruction;
   const imgContainer = document.getElementById('detail-images-container');
   if (s.images && s.images.length) {
     let html = '<div class="detail-images">';
