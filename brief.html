@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor Brief — Pixar Animation Workflow</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F4EF; color: #1a1a1a; }
+
+nav { display: flex; align-items: center; gap: 24px; padding: 16px 28px; border-bottom: 1px solid #e0e0e0; background: #fff; position: sticky; top: 0; z-index: 50; }
+nav .brand { font-size: 14px; font-weight: 600; color: #111; margin-right: auto; }
+nav a { font-size: 13px; color: rgba(0,0,0,0.5); text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: all 0.15s; }
+nav a:hover { color: #111; background: rgba(0,0,0,0.05); }
+nav a.active { color: #111; background: rgba(0,0,0,0.07); font-weight: 500; }
+
+.page { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+
+h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+.subtitle { font-size: 14px; color: rgba(0,0,0,0.45); margin-bottom: 32px; }
+
+.brief-section { margin-bottom: 32px; }
+.brief-section h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(0,0,0,0.4); margin-bottom: 12px; }
+
+.brief-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px 22px; margin-bottom: 10px; }
+.brief-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.brief-card p { font-size: 14px; color: rgba(0,0,0,0.55); line-height: 1.5; }
+.brief-card .field { font-size: 14px; color: #111; margin-top: 8px; padding: 10px 14px; background: #F5F4EF; border-radius: 6px; border: 1px dashed #ccc; min-height: 40px; }
+.brief-card .example { font-size: 13px; color: rgba(0,0,0,0.4); font-style: italic; margin-top: 6px; }
+
+.script-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+.script-table th { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(0,0,0,0.4); text-align: left; padding: 8px 12px; border-bottom: 2px solid #e0e0e0; }
+.script-table td { font-size: 14px; padding: 10px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+.script-table td:first-child { font-weight: 500; white-space: nowrap; width: 100px; }
+.script-table .flex-note { font-size: 12px; color: rgba(0,0,0,0.35); font-style: italic; }
+
+.rule-list { list-style: none; padding: 0; }
+.rule-list li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; line-height: 1.5; }
+.rule-list li:last-child { border: none; }
+.rule-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; margin-top: 1px; }
+.rule-do { background: #E1F5EE; color: #1D9E75; }
+.rule-dont { background: #FBEAF0; color: #993556; }
+
+.steps-simple { list-style: none; padding: 0; counter-reset: step; }
+.steps-simple li { counter-increment: step; display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid #eee; font-size: 14px; line-height: 1.5; }
+.steps-simple li:last-child { border: none; }
+.steps-simple li::before { content: counter(step); flex-shrink: 0; width: 26px; height: 26px; background: #EEEDFE; color: #7F77DD; font-weight: 600; font-size: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.steps-simple li strong { color: #111; }
+
+.checkpoint { background: #FBEAF0; border: 1px solid #E8C5D3; border-radius: 8px; padding: 14px 18px; margin: 8px 0; font-size: 13px; color: #72243E; }
+.checkpoint strong { color: #4B1528; }
+
+.tip-box { background: #EEEDFE; border: 1px solid #D5D1F5; border-radius: 8px; padding: 14px 18px; margin-top: 20px; font-size: 13px; color: #534AB7; line-height: 1.5; }
+.tip-box strong { color: #3C3489; }
+
+.nav-to-flow { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; padding: 12px 20px; background: #111; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 500; transition: opacity 0.15s; }
+.nav-to-flow:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Pixar Animation Workflow</div>
+  <a href="flowchart.html">Workflow</a>
+  <a href="brief.html" class="active">Editor Brief</a>
+</nav>
+
+<div class="page">
+  <h1>Editor Brief</h1>
+  <p class="subtitle">Everything an editor needs to build one ad. Fill this out per project.</p>
+
+  <!-- SECTION 1: THE BRIEF -->
+  <div class="brief-section">
+    <h2>The brief</h2>
+
+    <div class="brief-card">
+      <h3>Concept (one sentence)</h3>
+      <p>What's the idea in plain English?</p>
+      <div class="field"></div>
+      <div class="example">e.g. "Foods that seem healthy are secretly destroying your gut — they're muscular bullies"</div>
+    </div>
+
+    <div class="brief-card">
+      <h3>Reference video</h3>
+      <p>The ad to use as structural inspiration. Watch this first.</p>
+      <div class="field"></div>
+      <div class="example">e.g. Link to V2 top performer or a TikTok reference</div>
+    </div>
+
+    <div class="brief-card">
+      <h3>Character</h3>
+      <p>The hero character image. Upload this to Claude/ChatGPT before starting.</p>
+      <div class="field"></div>
+      <div class="example">e.g. Supply Life box character (image attached)</div>
+    </div>
+
+    <div class="brief-card">
+      <h3>Foods to use</h3>
+      <p>Only use these — they're confirmed on the test panel.</p>
+      <div class="field"></div>
+      <div class="example">e.g. Oats, peas, eggs, cow's milk, gluten/wheat</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: THE SCRIPT -->
+  <div class="brief-section">
+    <h2>Draft script</h2>
+    <p style="font-size: 14px; color: rgba(0,0,0,0.5); margin-bottom: 12px;">This is a guide, not gospel. You can flex the wording to match what the AI generates.</p>
+
+    <div class="brief-card" style="padding: 12px 16px;">
+      <table class="script-table">
+        <thead>
+          <tr>
+            <th>Scene</th>
+            <th>What happens</th>
+            <th>Draft line</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hook</td>
+            <td></td>
+            <td><span class="flex-note">Flexible — match to image</span></td>
+          </tr>
+          <tr>
+            <td>Villain 1</td>
+            <td></td>
+            <td><span class="flex-note">Flexible</span></td>
+          </tr>
+          <tr>
+            <td>Villain 2</td>
+            <td></td>
+            <td><span class="flex-note">Flexible</span></td>
+          </tr>
+          <tr>
+            <td>Explainer</td>
+            <td></td>
+            <td><span class="flex-note">Flexible</span></td>
+          </tr>
+          <tr>
+            <td>Solution</td>
+            <td></td>
+            <td><span class="flex-note">Flexible</span></td>
+          </tr>
+          <tr>
+            <td>CTA</td>
+            <td></td>
+            <td><span class="flex-note">Flexible</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 3: RULES -->
+  <div class="brief-section">
+    <h2>Rules</h2>
+    <div class="brief-card">
+      <ul class="rule-list">
+        <li><span class="rule-icon rule-do">✓</span> Every scene must be understood in 2 seconds</li>
+        <li><span class="rule-icon rule-do">✓</span> Every scene takes place inside or on the body</li>
+        <li><span class="rule-icon rule-do">✓</span> Ask AI for 3+ image prompt options per scene — pick the best</li>
+        <li><span class="rule-icon rule-do">✓</span> When output is wrong, screenshot it → send to AI → get a fixed prompt</li>
+        <li><span class="rule-icon rule-do">✓</span> Animation prompts = one action, simply described</li>
+        <li><span class="rule-icon rule-do">✓</span> Keep all action centred in frame (safe zones)</li>
+        <li><span class="rule-icon rule-dont">✗</span> No courtroom, no lineup, no politician — all tested, all flopped</li>
+        <li><span class="rule-icon rule-dont">✗</span> Don't regenerate the same prompt hoping for different results</li>
+        <li><span class="rule-icon rule-dont">✗</span> Don't use foods NOT on the test panel</li>
+        <li><span class="rule-icon rule-dont">✗</span> Don't write long animation prompts — causes jitter</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 4: YOUR STEPS -->
+  <div class="brief-section">
+    <h2>What you do</h2>
+    <div class="brief-card">
+      <ol class="steps-simple">
+        <li>Upload the <strong>character image</strong> and <strong>reference video breakdown</strong> to Claude or ChatGPT</li>
+        <li>Give it the script. Ask for <strong>3 visual options per scene</strong>. Pick the best.</li>
+        <li>Paste the chosen prompt into <strong>Nano-Banana Pro (2K)</strong>. Generate 2-3 versions.</li>
+        <li>If the output is wrong: <strong>screenshot → AI → fixed prompt → regenerate</strong></li>
+        <li>Once all stills are done: <strong>send them for review before animating</strong></li>
+        <li>Animate each still in <strong>Seedance / Kling</strong>. One simple action per clip.</li>
+        <li>Add voiceover. If it sounds off, run through <strong>ElevenLabs Voice Changer</strong>.</li>
+        <li>Stitch, caption (white text, black outline), export <strong>9:16 + 4:5</strong>.</li>
+      </ol>
+
+      <div class="checkpoint"><strong>Checkpoint 1:</strong> Send all stills for review BEFORE animating. Regenerating a still is free. Redoing animation wastes credits.</div>
+      <div class="checkpoint"><strong>Checkpoint 2:</strong> Send final video for review before delivery.</div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>The core skill:</strong> When something doesn't look right, don't just regenerate and hope. Screenshot the problem, describe what's wrong, send it to Claude/ChatGPT, and get a fixed prompt. That feedback loop is the whole game.
+  </div>
+
+  <a href="flowchart.html" class="nav-to-flow">See the full step-by-step workflow →</a>
+</div>
+
+</body>
+</html>
