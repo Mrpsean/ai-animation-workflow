@@ -155,40 +155,60 @@ svg text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-seri
       <line x1="500" y1="196" x2="350" y2="196" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
       <line x1="340" y1="196" x2="340" y2="220" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <!-- PHASE 1.5 — PRODUCT CHARACTER -->
-      <text class="phase-label" x="40" y="240" fill="rgba(0,0,0,0.35)">Phase 1.5 — Product character</text>
+      <!-- PHASE 1.5 — HERO CHARACTER -->
+      <text class="phase-label" x="40" y="240" fill="rgba(0,0,0,0.35)">Phase 1.5 — Hero character</text>
 
-      <text class="step-num" x="152" y="262" fill="#1D9E75">2a</text>
+      <text class="step-num" x="202" y="262" fill="#993556">2</text>
+      <g class="node-group" data-step="step-2" onclick="showDetail('step-2')">
+        <rect x="190" y="248" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+        <text x="340" y="267" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Reusing character or new one?</text>
+        <text x="340" y="281" text-anchor="middle" font-size="11" fill="#72243E">Decision point</text>
+      </g>
+
+      <!-- Path A — reuse -->
+      <line x1="190" y1="270" x2="80" y2="270" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="80" y1="270" x2="80" y2="312" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="44" y="298" font-size="10" fill="rgba(0,0,0,0.4)">Reuse</text>
+
+      <text class="step-num" x="22" y="330" fill="#1D9E75">2a</text>
       <g class="node-group" data-step="step-2a" onclick="showDetail('step-2a')">
-        <rect x="140" y="248" width="400" height="44" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
-        <text x="340" y="267" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">Show product photo to Claude first</text>
-        <text x="340" y="281" text-anchor="middle" font-size="11" fill="#0F6E56">Claude documents design before any prompts</text>
+        <rect x="10" y="316" width="260" height="44" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+        <text x="140" y="335" text-anchor="middle" font-size="12" font-weight="500" fill="#085041">Show existing character to Claude</text>
+        <text x="140" y="349" text-anchor="middle" font-size="10" fill="#0F6E56">Claude learns the design, skip NB</text>
       </g>
 
-      <line x1="340" y1="292" x2="340" y2="312" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <!-- Path B — new -->
+      <line x1="490" y1="270" x2="580" y2="270" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="580" y1="270" x2="580" y2="312" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <text x="530" y="298" font-size="10" fill="rgba(0,0,0,0.4)">New</text>
 
-      <text class="step-num" x="152" y="330" fill="#BA7517">2b</text>
+      <text class="step-num" x="412" y="330" fill="#BA7517">2b</text>
       <g class="node-group" data-step="step-2b" onclick="showDetail('step-2b')">
-        <rect x="140" y="316" width="400" height="44" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
-        <text x="340" y="335" text-anchor="middle" font-size="13" font-weight="500" fill="#412402">Nano-Banana: Pixar-ify the product</text>
-        <text x="340" y="349" text-anchor="middle" font-size="11" fill="#854F0B">Generate 3+ versions, pick the best</text>
+        <rect x="400" y="316" width="260" height="44" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+        <text x="530" y="335" text-anchor="middle" font-size="12" font-weight="500" fill="#412402">Nano-Banana: Pixar-ify product</text>
+        <text x="530" y="349" text-anchor="middle" font-size="10" fill="#854F0B">Generate 3+, pick best, show Claude</text>
       </g>
 
-      <line x1="340" y1="360" x2="340" y2="380" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <!-- Both paths merge -->
+      <line x1="140" y1="360" x2="140" y2="390" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="530" y1="360" x2="530" y2="390" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="140" y1="390" x2="330" y2="390" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="530" y1="390" x2="350" y2="390" stroke="rgba(0,0,0,0.2)" stroke-width="1"/>
+      <line x1="340" y1="390" x2="340" y2="410" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
-      <text class="step-num" x="202" y="398" fill="#993556">2c</text>
+      <text class="step-num" x="202" y="428" fill="#993556">2c</text>
       <g class="node-group" data-step="step-2c" onclick="showDetail('step-2c')">
-        <rect x="190" y="384" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
-        <text x="340" y="403" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with character?</text>
-        <text x="340" y="417" text-anchor="middle" font-size="11" fill="#72243E">Screenshot bad output &#x2192; Claude fixes</text>
+        <rect x="190" y="414" width="300" height="44" rx="8" fill="#FBEAF0" stroke="#993556" stroke-width="0.5"/>
+        <text x="340" y="433" text-anchor="middle" font-size="13" font-weight="500" fill="#4B1528">Happy with character?</text>
+        <text x="340" y="447" text-anchor="middle" font-size="11" fill="#72243E">Screenshot bad output &#x2192; Claude fixes</text>
       </g>
 
-      <line x1="490" y1="406" x2="550" y2="406" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="406" x2="550" y2="340" stroke="#993556" stroke-width="0.8"/>
-      <line x1="550" y1="340" x2="542" y2="340" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
-      <text x="556" y="376" font-size="11" fill="#993556">No &#x2192; Claude</text>
+      <line x1="490" y1="436" x2="620" y2="436" stroke="#993556" stroke-width="0.8"/>
+      <line x1="620" y1="436" x2="620" y2="340" stroke="#993556" stroke-width="0.8"/>
+      <line x1="620" y1="340" x2="662" y2="340" stroke="#993556" stroke-width="0.8" marker-end="url(#arr)"/>
+      <text x="624" y="392" font-size="11" fill="#993556">No &#x2192; redo</text>
 
-      <line x1="340" y1="428" x2="340" y2="458" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
+      <line x1="340" y1="458" x2="340" y2="488" stroke="rgba(0,0,0,0.2)" stroke-width="1" marker-end="url(#arr)"/>
 
       <!-- PHASE 2 — SCRIPT -->
       <text class="phase-label" x="40" y="478" fill="rgba(0,0,0,0.35)">Phase 2 — Script (iterative, not one-shot)</text>
@@ -420,28 +440,34 @@ const steps = {
       { url: 'https://claude.ai/', label: 'Open Claude' }
     ]
   },
+  'step-2': {
+    step: '2', title: 'Reusing character or creating new?',
+    instruction: 'Decision point. If you already have a Pixar-ified character from a previous ad that you want to reuse — go left (Path A). If you need a brand new character — go right (Path B). Either way, Claude must see the character before writing any scene prompts.',
+    tip: 'The V2 top performer reused the Supply Life box character from V1. It was shown to Claude at the start of the session — not recreated from scratch.'
+  },
   'step-2a': {
-    step: '2a', title: 'Show product photo to Claude first',
-    instruction: 'Before generating in Nano-Banana, upload the real product photo to Claude. Claude documents the character design — branding, colours, proportions, limb style. This knowledge informs every prompt that includes the product character. Without this step, Claude describes a generic box character.',
+    step: '2a', title: 'Show existing character to Claude',
+    instruction: 'Upload the existing Pixar-ified character image to Claude. Say: "This is the character we\'re using for this ad." Claude now knows the design and will include it accurately in every Nano-Banana prompt. Skip Nano-Banana character creation entirely.',
     images: [
-      { src: 'images/supply-life-box.png', label: 'Supply Life box character' }
-    ]
+      { src: 'images/supply-life-box.png', label: 'Existing Supply Life box character from V1/V2' }
+    ],
+    tip: 'This is what happened in the V2 production — the character already existed from V1. No need to recreate it.'
   },
   'step-2b': {
     step: '2b', title: 'Nano-Banana: Pixar-ify the product',
-    instruction: 'Upload the real product image to Nano-Banana Pro. Prompt: "Turn this into a Pixar/Dreamworks 3D animated character." Generate at least 3 versions. Pick the strongest. Save that output — it becomes the character reference for every subsequent scene.',
+    instruction: 'Only if creating a NEW character. Upload the real product photo to Nano-Banana Pro. Prompt: "Turn this into a Pixar/Dreamworks 3D animated character." Generate 3+ versions, pick the best. Then show that chosen character to Claude so Claude knows the design going forward.',
     links: [
       { url: 'https://www.higgsfield.ai/', label: 'Open Higgsfield' }
     ],
-    tip: 'Generate the product character FIRST, separately. You\'ll reference this image in every scene it appears in to maintain consistency.'
+    tip: 'Save the chosen output — it becomes the character reference for every subsequent scene. Upload it as a reference in Nano-Banana for consistency.'
   },
   'step-2c': {
     step: '2c', title: 'Happy with character?',
-    instruction: 'Check the output. If wrong — screenshot the bad output, send to Claude, describe the specific problem. Claude rewrites the prompt. Regenerate. Don\'t regenerate the same prompt — that gives variations of the same mistake.',
+    instruction: 'Check the output (whether reused or new). If wrong — screenshot the bad output, send to Claude, describe the specific problem. Claude rewrites the prompt. Regenerate. Don\'t regenerate the same prompt — that gives variations of the same mistake.',
     images: [
-      { src: 'images/supply-life-box.png', label: 'Good: cardboard limbs, correct branding' }
+      { src: 'images/supply-life-box.png', label: 'Good: correct character design' }
     ],
-    tip: 'Known issue: Nano-Banana sometimes renders limbs as gold/metallic instead of cardboard-coloured. Specify "cardboard-coloured limbs, NOT metallic" in the prompt.'
+    tip: 'Known issue: Nano-Banana sometimes renders limbs as gold/metallic instead of cardboard-coloured. Specify "cardboard-coloured limbs, NOT metallic" in the prompt if this happens.'
   },
   'step-3': {
     step: '3', title: 'Claude writes the script (iterative)',
